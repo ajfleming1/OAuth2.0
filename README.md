@@ -10,7 +10,7 @@ A basic OAuth Server written in .NET Core. Includes rate limiting.
 * PUT api/v1/birthdate - Authenticated Method - Scope: user-modify-birthdate
 * PUT api/v1/email - Authenticated Method - Scope: user-modify-email
 
-This was created based on the tutorial https://0xnf.github.io/series/implement-an-oauth-2.0-server/
+This was created based on the tutorial https://0xnf.github.io/series/implement-an-oauth-2.0-server/ and https://kevinchalet.com/2016/07/13/creating-your-own-openid-connect-server-with-asos-introduction/.
 
 ## Authorization Code Flow
 * https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope=user-read-birthdate
