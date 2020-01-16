@@ -31,6 +31,14 @@ namespace OAuth.Controllers
 
     public async Task<IActionResult> Index()
     {
+      var user  = await _userManager.GetUserAsync(HttpContext.User);
+      var userId = user?.Id;
+      var mail = user?.Email;
+      if (userId == null && mail == null)
+      {
+        return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString});
+      }
+
       OpenIdConnectRequest request = HttpContext.GetOpenIdConnectRequest();
       OAuthClient client = await _context.ClientApplications.Where(x => x.ClientId == request.ClientId).FirstOrDefaultAsync();
       if (client == null)
@@ -63,13 +71,13 @@ namespace OAuth.Controllers
       ApplicationUser au = await _userManager.GetUserAsync(HttpContext.User);
       if (au == null)
       {
-        return LocalRedirect("/error");
+        return RedirectToAction("Error", "Home");
       }
       OpenIdConnectRequest request = HttpContext.GetOpenIdConnectRequest();
       AuthorizeViewModel avm = await FillFromRequest(request);
       if (avm == null)
       {
-        return LocalRedirect("/error");
+        return RedirectToAction("Error", "Home");
       }
       AuthenticationTicket ticket = TicketCounter.MakeClaimsForInteractive(au, avm);
       Microsoft.AspNetCore.Mvc.SignInResult sr = SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
