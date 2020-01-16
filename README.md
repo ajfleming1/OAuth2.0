@@ -13,19 +13,20 @@ A basic OAuth Server written in .NET Core. Includes rate limiting.
 This was created based on the tutorial https://0xnf.github.io/series/implement-an-oauth-2.0-server/
 
 ## Authorization Code Flow
-https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope=user-read-birthdate
-POST /api/v1/token HTTP/1.1
+* https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope=user-read-birthdate
+
+* POST /api/v1/token HTTP/1.1
 Host: localhost:5001
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=authorization_code&code={authorizationCode}&redirect_uri={redirectUri}&client_id={id}
 
 ## Implicit Flow 
-https://localhost:5001/authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope=user-read-birthdate
+* https://localhost:5001/authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope=user-read-birthdate
 
 
 ## Client Credentials Flow
-POST /api/v1/token HTTP/1.1
+* POST /api/v1/token HTTP/1.1
 Host: localhost:5001
 Content-Type: application/x-www-form-urlencoded
 
