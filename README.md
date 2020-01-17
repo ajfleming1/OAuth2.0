@@ -11,22 +11,27 @@ A basic OAuth Server (with rate limiting) written in .NET Core. This solution cr
 * PUT api/v1/email - Authenticated Method - Scope: user-modify-email
 
 ## Authorization Code Flow
-* https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope={scopes}
+``` 
+https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope={scopes}
+```
+```
+POST /api/v1/token HTTP/1.1
+Host: localhost:5001
+Content-Type: application/x-www-form-urlencoded
 
-` POST /api/v1/token HTTP/1.1`
-` Host: localhost:5001`
-` Content-Type: application/x-www-form-urlencoded`
-
-` grant_type=authorization_code&code={authorizationCode}&redirect_uri={redirectUri}&client_id={id}`
+grant_type=authorization_code&code={authorizationCode}&redirect_uri={redirectUri}&client_id={id}
+```
 
 ## Implicit Flow 
-* https://localhost:5001/authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope={scopes}
-
+```
+https://localhost:5001/authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope={scopes}
+```
 
 ## Client Credentials Flow
-` POST /api/v1/token HTTP/1.1`
-`Host: localhost:5001`
-`Content-Type: application/x-www-form-urlencoded`
+```
+POST /api/v1/token HTTP/1.1
+Host: localhost:5001
+Content-Type: application/x-www-form-urlencoded
 
-`grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_secret={secret}`
-
+grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_secret={secret}
+```
