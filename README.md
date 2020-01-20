@@ -13,7 +13,7 @@ A basic OAuth Server (with rate limiting) written in .NET Core. This solution cr
 ## Getting Tokens
 ### Authorization Code Flow
 ``` 
-https://localhost:5001/authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope={scopes}
+GET /authorize/?client_id={id}&response_type=code&redirect_uri={redirectUri}&scope={scopes}
 ```
 ```
 POST /api/v1/token HTTP/1.1
@@ -25,7 +25,7 @@ grant_type=authorization_code&code={authorizationCode}&redirect_uri={redirectUri
 
 ### Implicit Flow 
 ```
-https://localhost:5001/authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope={scopes}
+GET /authorize/?client_id={id}&response_type=token&redirect_uri={redirectUri}&scope={scopes}
 ```
 
 ### Client Credentials Flow
@@ -39,7 +39,7 @@ grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_s
 
 ### Proof Key For Exchange (PKCE)
 ```
-https://localhost:5001/authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HashOfCodeVerifier}&code_challenge_method=S256
+GET /authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HashOfCodeVerifier}&code_challenge_method=S256
 ```
 
 ```
