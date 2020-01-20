@@ -36,3 +36,16 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_secret={secret}
 ```
+
+### Proof Key For Exchange (PKCE)
+```
+https://localhost:5001/authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HasOfCodeVerifier}&code_challenge_method=S256
+```
+
+```
+POST /api/v1/token HTTP/1.1
+Host: localhost:5001
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&code={code}&redirect_uri={redirectUri}&client_id={id}&code_verifier={codeVerifier}
+```

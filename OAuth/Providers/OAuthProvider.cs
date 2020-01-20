@@ -120,7 +120,7 @@ namespace OAuth.Providers
       var clientId = context.ClientId;
       var clientSecret = context.ClientSecret;
       var redirectUri = context.Request.RedirectUri;
-
+      var codeVerifier = context.Request.CodeVerifier;
       // Validating the Authorization Code Token Request
       if (context.Request.IsAuthorizationCodeGrantType())
       {
@@ -130,7 +130,7 @@ namespace OAuth.Providers
           return;
         }
 
-        if (string.IsNullOrWhiteSpace(clientSecret))
+        if (string.IsNullOrWhiteSpace(clientSecret) && string.IsNullOrEmpty(codeVerifier))
         {
           context.Reject(OpenIdConnectConstants.Errors.InvalidClient,"client_secret cannot be empty");
           return;
@@ -148,7 +148,7 @@ namespace OAuth.Providers
           return;
         }
 
-        if (!await _vService.CheckClientIdAndSecretIsValid(clientId, clientSecret))
+        if (string.IsNullOrEmpty(codeVerifier) && !await _vService.CheckClientIdAndSecretIsValid(clientId, clientSecret))
         {
           context.Reject(OpenIdConnectConstants.Errors.InvalidClient,"The supplied client secret is invalid");
           return;
