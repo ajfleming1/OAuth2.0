@@ -39,7 +39,8 @@
         <input type="hidden" name="scope" value="@string.Join(' ', Model.Scopes)" />
         <input type="hidden" name="redirect_uri" value="@Model.RedirectUri" />
         <input type="hidden" name="state" value="@Model.State" />
-
+        <input type="hidden" name="code_challenge" value="@Model.CodeChallenge" />
+        <input type="hidden" name="code_challenge_method" value="@Model.CodeChallengeMethod" />
         <button class="btn btn-xs btn-danger" type="submit">
           accept
         </button>

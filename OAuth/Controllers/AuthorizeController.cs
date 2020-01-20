@@ -54,7 +54,9 @@ namespace OAuth.Controllers
         RedirectUri = request.RedirectUri,
         ResponseType = request.ResponseType,
         Scopes = string.IsNullOrWhiteSpace(request.Scope) ? new string[0] : request.Scope.Split(' '),
-        State = request.State
+        State = request.State,
+        CodeChallenge = request.CodeChallenge,
+        CodeChallengeMethod = request.CodeChallengeMethod
       };
       return View(vm);
     }
