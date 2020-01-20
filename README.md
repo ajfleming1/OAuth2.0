@@ -39,7 +39,7 @@ grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_s
 
 ### Proof Key For Exchange (PKCE)
 ```
-https://localhost:5001/authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HasOfCodeVerifier}&code_challenge_method=S256
+https://localhost:5001/authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HashOfCodeVerifier}&code_challenge_method=S256
 ```
 
 ```
