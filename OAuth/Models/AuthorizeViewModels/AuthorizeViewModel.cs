@@ -9,5 +9,7 @@
     public string RedirectUri { get; internal set; }
     public string[] Scopes { get; internal set; } = new string[0];
     public string State { get; internal set; }
+    public string CodeChallenge { get; set; }
+    public string CodeChallengeMethod { get; set; }
   }
 }
