@@ -37,7 +37,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=client_credentials&redirect_uri={redirectUri}&client_id={id}&client_secret={secret}
 ```
 
-### Proof Key For Exchange (PKCE)
+### Proof Key For Code Exchange (PKCE)
 ```
 GET /authorize/?scope={scopes}&response_type=code&client_id={id}&redirect_uri={redirectUri}&code_challenge={sha256HashOfCodeVerifier}&code_challenge_method=S256
 ```
