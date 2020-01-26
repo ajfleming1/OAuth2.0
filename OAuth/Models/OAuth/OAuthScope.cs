@@ -38,5 +38,6 @@ namespace OAuth.Models.OAuth
     public static readonly OAuthScope UserReadBirthdate = new OAuthScope("user-read-birthdate", "Permission to know your birthdate");
     public static readonly OAuthScope UserModifyEmail = new OAuthScope("user-modify-email", "Permission to change your email address");
     public static readonly OAuthScope UserModifyBirthdate = new OAuthScope("user-modify-birthdate", "Permission to change your birthdate");
+    public static readonly OAuthScope OpenId = new OAuthScope("openid", "OIDC scope");
   }
 }

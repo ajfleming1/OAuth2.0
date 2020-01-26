@@ -49,14 +49,14 @@ namespace OAuth.Providers
           */
       ClaimsIdentity identity = new ClaimsIdentity(OpenIdConnectServerDefaults.AuthenticationScheme, OpenIdConnectConstants.Claims.Name, OpenIdConnectConstants.Claims.Role);
 
-      identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
-      identity.AddClaim(new Claim(ClaimTypes.Name, user.NormalizedUserName).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
-      identity.AddClaim(new Claim("AspNet.Identity.SecurityStamp", user.SecurityStamp).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
+      identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
+      identity.AddClaim(new Claim(ClaimTypes.Name, user.NormalizedUserName).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
+      identity.AddClaim(new Claim("AspNet.Identity.SecurityStamp", user.SecurityStamp).SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
 
       // We serialize the user_id so we can determine which user the caller of this token is
       identity.AddClaim(
               new Claim(OpenIdConnectConstants.Claims.Subject, user.Id)
-                  .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
+                  .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
 
       switch (authorizeViewModel.ResponseType)
       {
@@ -64,19 +64,19 @@ namespace OAuth.Providers
         case OpenIdConnectConstants.ResponseTypes.Code:
           identity.AddClaim(
             new Claim("grant_type", OpenIdConnectConstants.GrantTypes.AuthorizationCode)
-              .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
+              .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
           break;
         case OpenIdConnectConstants.ResponseTypes.Token:
           identity.AddClaim(
             new Claim("grant_type", OpenIdConnectConstants.GrantTypes.Implicit)
-              .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
+              .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
           break;
       }
 
       // We serialize the client_id so we can monitor for usage patterns of a given app, and also to allow for app-based token revokes.
       identity.AddClaim(
               new Claim("client_id", authorizeViewModel.ClientId)
-                  .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken));
+                  .SetDestinations(OpenIdConnectConstants.Destinations.AccessToken, OpenIdConnectConstants.Destinations.IdentityToken));
 
 
       AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), new AuthenticationProperties(), OpenIdConnectServerDefaults.AuthenticationScheme);
