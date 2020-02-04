@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OAuth.Migrations
 {
-    public partial class WithRateLimit : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,7 +52,7 @@ namespace OAuth.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -72,7 +73,7 @@ namespace OAuth.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -179,7 +180,7 @@ namespace OAuth.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     OAuthClientId = table.Column<string>(nullable: true),
                     URI = table.Column<string>(nullable: true)
                 },
@@ -199,7 +200,7 @@ namespace OAuth.Migrations
                 columns: table => new
                 {
                     TokenId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     GrantType = table.Column<string>(nullable: true),
                     TokenType = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
@@ -220,7 +221,7 @@ namespace OAuth.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,7 +229,7 @@ namespace OAuth.Migrations
                 columns: table => new
                 {
                     RateLimitId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Limit = table.Column<int>(nullable: true),
                     Window = table.Column<TimeSpan>(nullable: true),
                     TokenId = table.Column<int>(nullable: true),
@@ -249,13 +250,13 @@ namespace OAuth.Migrations
                         column: x => x.SubordinatedClientId,
                         principalTable: "ClientApplications",
                         principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_RateLimit_Tokens_TokenId",
                         column: x => x.TokenId,
                         principalTable: "Tokens",
                         principalColumn: "TokenId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -267,7 +268,8 @@ namespace OAuth.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -293,7 +295,8 @@ namespace OAuth.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientApplications_Id",
@@ -304,19 +307,22 @@ namespace OAuth.Migrations
                 name: "IX_RateLimit_ClientId",
                 table: "RateLimit",
                 column: "ClientId",
-                unique: true);
+                unique: true,
+                filter: "[ClientId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RateLimit_SubordinatedClientId",
                 table: "RateLimit",
                 column: "SubordinatedClientId",
-                unique: true);
+                unique: true,
+                filter: "[SubordinatedClientId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RateLimit_TokenId",
                 table: "RateLimit",
                 column: "TokenId",
-                unique: true);
+                unique: true,
+                filter: "[TokenId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RedirectURI_OAuthClientId",

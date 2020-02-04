@@ -7,23 +7,41 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <NoWin32Manifest>true</NoWin32Manifest>
     <AssemblyName>OAuth</AssemblyName>
+      
     <RootNamespace>OAuth</RootNamespace>
+    <ApplicationInsightsResourceId>/subscriptions/ca337628-8e20-441d-80a0-f05bc4736e92/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/OAuth</ApplicationInsightsResourceId>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Introspection" Version="2.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.0.0" />
+    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.0.0-preview.5" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureKeyVault.HostingStartup" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.2105168" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
     <PackageReference Include="OpenIddict" Version="2.0.1" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.1" />
+    <PackageReference Include="RSAKeyVaultProvider" Version="1.1.57" />
+    <PackageReference Include="WindowsAzure.Storage" Version="7.2.1" />
   </ItemGroup>
+
 
 
   <ItemGroup>
     <Folder Include="Views\Manage\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
