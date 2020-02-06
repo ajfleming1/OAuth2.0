@@ -199,11 +199,15 @@ namespace OAuth.Migrations
                     b.Property<string>("Id")
                         .IsRequired();
 
+                    b.Property<int?>("SubordinateTokenLimitsRateLimitId");
+
                     b.HasKey("ClientId");
 
                     b.HasAlternateKey("ClientName");
 
                     b.HasIndex("Id");
+
+                    b.HasIndex("SubordinateTokenLimitsRateLimitId");
 
                     b.ToTable("ClientApplications");
                 });
@@ -218,10 +222,6 @@ namespace OAuth.Migrations
 
                     b.Property<int?>("Limit");
 
-                    b.Property<string>("SubordinatedClientId");
-
-                    b.Property<int?>("TokenId");
-
                     b.Property<TimeSpan?>("Window");
 
                     b.HasKey("RateLimitId");
@@ -229,14 +229,6 @@ namespace OAuth.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique()
                         .HasFilter("[ClientId] IS NOT NULL");
-
-                    b.HasIndex("SubordinatedClientId")
-                        .IsUnique()
-                        .HasFilter("[SubordinatedClientId] IS NOT NULL");
-
-                    b.HasIndex("TokenId")
-                        .IsUnique()
-                        .HasFilter("[TokenId] IS NOT NULL");
 
                     b.ToTable("RateLimit");
                 });
@@ -264,21 +256,25 @@ namespace OAuth.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<string>("GrantType");
 
                     b.Property<string>("OAuthClientId");
 
-                    b.Property<string>("TokenType");
+                    b.Property<int?>("RateLimitId");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("TokenType");
 
                     b.Property<string>("Value");
 
                     b.HasKey("TokenId");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("OAuthClientId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RateLimitId");
 
                     b.ToTable("Tokens");
                 });
@@ -334,6 +330,10 @@ namespace OAuth.Migrations
                         .WithMany("UsersOAuthClients")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("OAuth.Models.OAuth.RateLimit", "SubordinateTokenLimits")
+                        .WithMany()
+                        .HasForeignKey("SubordinateTokenLimitsRateLimitId");
                 });
 
             modelBuilder.Entity("OAuth.Models.OAuth.RateLimit", b =>
@@ -341,16 +341,6 @@ namespace OAuth.Migrations
                     b.HasOne("OAuth.Models.OAuth.OAuthClient", "Client")
                         .WithOne("RateLimit")
                         .HasForeignKey("OAuth.Models.OAuth.RateLimit", "ClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("OAuth.Models.OAuth.OAuthClient", "SubordinatedClient")
-                        .WithOne("SubordinateTokenLimits")
-                        .HasForeignKey("OAuth.Models.OAuth.RateLimit", "SubordinatedClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("OAuth.Models.OAuth.Token", "Token")
-                        .WithOne("RateLimit")
-                        .HasForeignKey("OAuth.Models.OAuth.RateLimit", "TokenId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -364,15 +354,18 @@ namespace OAuth.Migrations
 
             modelBuilder.Entity("OAuth.Models.OAuth.Token", b =>
                 {
+                    b.HasOne("OAuth.Models.ApplicationUser")
+                        .WithMany("UserClientTokens")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("OAuth.Models.OAuth.OAuthClient", "Client")
                         .WithMany("UserApplicationTokens")
                         .HasForeignKey("OAuthClientId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("OAuth.Models.ApplicationUser", "User")
-                        .WithMany("UserClientTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("OAuth.Models.OAuth.RateLimit", "RateLimit")
+                        .WithMany()
+                        .HasForeignKey("RateLimitId");
                 });
 #pragma warning restore 612, 618
         }

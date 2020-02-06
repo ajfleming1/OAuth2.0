@@ -160,6 +160,7 @@ namespace OAuth.Migrations
                     ClientId = table.Column<string>(nullable: false),
                     ClientSecret = table.Column<string>(nullable: false),
                     Id = table.Column<string>(nullable: false),
+                    SubordinateTokenLimitsRateLimitId = table.Column<int>(nullable: true),
                     ClientName = table.Column<string>(maxLength: 100, nullable: false),
                     ClientDescription = table.Column<string>(maxLength: 300, nullable: false)
                 },
@@ -172,6 +173,27 @@ namespace OAuth.Migrations
                         column: x => x.Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RateLimit",
+                columns: table => new
+                {
+                    RateLimitId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Limit = table.Column<int>(nullable: true),
+                    Window = table.Column<TimeSpan>(nullable: true),
+                    ClientId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RateLimit", x => x.RateLimitId);
+                    table.ForeignKey(
+                        name: "FK_RateLimit_ClientApplications_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "ClientApplications",
+                        principalColumn: "ClientId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -204,12 +226,19 @@ namespace OAuth.Migrations
                     GrantType = table.Column<string>(nullable: true),
                     TokenType = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
+                    RateLimitId = table.Column<int>(nullable: true),
                     OAuthClientId = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
+                    ApplicationUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tokens", x => x.TokenId);
+                    table.ForeignKey(
+                        name: "FK_Tokens_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tokens_ClientApplications_OAuthClientId",
                         column: x => x.OAuthClientId,
@@ -217,46 +246,11 @@ namespace OAuth.Migrations
                         principalColumn: "ClientId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RateLimit",
-                columns: table => new
-                {
-                    RateLimitId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Limit = table.Column<int>(nullable: true),
-                    Window = table.Column<TimeSpan>(nullable: true),
-                    TokenId = table.Column<int>(nullable: true),
-                    ClientId = table.Column<string>(nullable: true),
-                    SubordinatedClientId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RateLimit", x => x.RateLimitId);
-                    table.ForeignKey(
-                        name: "FK_RateLimit_ClientApplications_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "ClientApplications",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RateLimit_ClientApplications_SubordinatedClientId",
-                        column: x => x.SubordinatedClientId,
-                        principalTable: "ClientApplications",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_RateLimit_Tokens_TokenId",
-                        column: x => x.TokenId,
-                        principalTable: "Tokens",
-                        principalColumn: "TokenId",
-                        onDelete: ReferentialAction.NoAction);
+                        name: "FK_Tokens_RateLimit_RateLimitId",
+                        column: x => x.RateLimitId,
+                        principalTable: "RateLimit",
+                        principalColumn: "RateLimitId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -304,6 +298,11 @@ namespace OAuth.Migrations
                 column: "Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClientApplications_SubordinateTokenLimitsRateLimitId",
+                table: "ClientApplications",
+                column: "SubordinateTokenLimitsRateLimitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RateLimit_ClientId",
                 table: "RateLimit",
                 column: "ClientId",
@@ -311,23 +310,14 @@ namespace OAuth.Migrations
                 filter: "[ClientId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RateLimit_SubordinatedClientId",
-                table: "RateLimit",
-                column: "SubordinatedClientId",
-                unique: true,
-                filter: "[SubordinatedClientId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RateLimit_TokenId",
-                table: "RateLimit",
-                column: "TokenId",
-                unique: true,
-                filter: "[TokenId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RedirectURI_OAuthClientId",
                 table: "RedirectURI",
                 column: "OAuthClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tokens_ApplicationUserId",
+                table: "Tokens",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_OAuthClientId",
@@ -335,13 +325,29 @@ namespace OAuth.Migrations
                 column: "OAuthClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tokens_UserId",
+                name: "IX_Tokens_RateLimitId",
                 table: "Tokens",
-                column: "UserId");
+                column: "RateLimitId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ClientApplications_RateLimit_SubordinateTokenLimitsRateLimitId",
+                table: "ClientApplications",
+                column: "SubordinateTokenLimitsRateLimitId",
+                principalTable: "RateLimit",
+                principalColumn: "RateLimitId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_ClientApplications_AspNetUsers_Id",
+                table: "ClientApplications");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_ClientApplications_RateLimit_SubordinateTokenLimitsRateLimitId",
+                table: "ClientApplications");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -358,22 +364,22 @@ namespace OAuth.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "RateLimit");
-
-            migrationBuilder.DropTable(
                 name: "RedirectURI");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Tokens");
 
             migrationBuilder.DropTable(
-                name: "ClientApplications");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "RateLimit");
+
+            migrationBuilder.DropTable(
+                name: "ClientApplications");
         }
     }
 }

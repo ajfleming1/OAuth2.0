@@ -24,9 +24,5 @@ namespace OAuth.Models.OAuth
     /* Entity Framework Foreign Key Anchors for OAuth Clients */
     public string OAuthClientId { get; set; }
     public OAuthClient Client { get; set; }
-
-    /* Entity Framework Foreign Key Anchors for Users */
-    public string UserId { get; set; }
-    public ApplicationUser User { get; set; }
   }
 }

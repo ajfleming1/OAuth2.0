@@ -13,14 +13,8 @@ namespace OAuth.Models.OAuth
 
     public TimeSpan? Window { get; set; } // The timespan of the rolling window. 
 
-    [ForeignKey("TokenId")]
-    public Token Token { get; set; }
-
     public string ClientId { get; set; }
     public OAuthClient Client { get; set; }
-
-    public string SubordinatedClientId { get; set; }
-    public OAuthClient SubordinatedClient { get; set; }
 
     public static RateLimit DefaultClientLimit =>
       new RateLimit()

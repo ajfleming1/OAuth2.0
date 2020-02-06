@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OAuth.Data;
 using OAuth.Models;
 using OAuth.Policies;
 using OAuth.Providers;
 using OAuth.Services;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
 
 namespace OAuth
 {

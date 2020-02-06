@@ -30,7 +30,6 @@
     <PackageReference Include="OpenIddict" Version="2.0.1" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="RSAKeyVaultProvider" Version="1.1.57" />
-    <PackageReference Include="WindowsAzure.Storage" Version="7.2.1" />
   </ItemGroup>
 
 
