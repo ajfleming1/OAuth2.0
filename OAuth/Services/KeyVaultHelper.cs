@@ -7,8 +7,6 @@ namespace OAuth.Services
 {
     public class KeyVaultHelper
     {
-        //private static string GetKeyVaultEndpoint() => "https://oauth-0-kv.vault.azure.net";
-
         public static RsaSecurityKey GetSigningKey(string keyVaultEndpoint, string keyPath)
         {
             if (string.IsNullOrEmpty(keyVaultEndpoint)) throw new InvalidOperationException();
@@ -16,7 +14,6 @@ namespace OAuth.Services
             var keyVaultClient = new KeyVaultClient(
                 new KeyVaultClient.AuthenticationCallback(
                     azureServiceTokenProvider.KeyVaultTokenCallback));
-            //var key = keyVaultClient.GetKeyAsync("https://oauth-0-kv.vault.azure.net/keys/OAuthRSA/8bc6ec6c8ca14bb4a1ef1d32f1df29e0").GetAwaiter().GetResult();
             var key = keyVaultClient.GetKeyAsync(keyPath).GetAwaiter().GetResult();
             if (key == null)
             {
