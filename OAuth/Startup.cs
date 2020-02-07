@@ -52,20 +52,19 @@ namespace OAuth
                     options.UserinfoEndpointPath = "/api/v1/me";
                     options.TokenEndpointPath = "/api/v1/token";
                     options.AuthorizationEndpointPath = "/authorize/";
-                    options.UseSlidingExpiration = false; // False means that new Refresh tokens aren't issued. Our implementation will be doing a no-expiry refresh, and this is one part of it.
-                    options.AllowInsecureHttp = true; // ONLY FOR TESTING
-                    options.AccessTokenLifetime =
-                      TimeSpan.FromHours(1); // An access token is valid for an hour - after that, a new one must be requested.
+                    options.UseSlidingExpiration = false;
+                    options.AllowInsecureHttp = true;
+                    options.AccessTokenLifetime = TimeSpan.FromHours(1);
                     options.RefreshTokenLifetime =
-                      TimeSpan.FromDays(
-                        365 * 1000); //NOTE - Later versions of the ASOS library support `TimeSpan?` for these lifetime fields, meaning no expiration. 
-                                     // The version we are using does not, so a long running expiration of one thousand years will suffice.
+                      TimeSpan.FromDays(365 * 1000);
                     options.AuthorizationCodeLifetime = TimeSpan.FromSeconds(60);
                     options.IdentityTokenLifetime = options.AccessTokenLifetime;
                     options.ProviderType = typeof(OAuthProvider);
 
                     // Register the HSM signing key.
-                    options.SigningCredentials.AddKey(KeyVaultHelper.GetSigningKey());
+                    var keyPath = Configuration.GetSection("KeyVault")["KeyPath"];
+                    var keyVaultEndpoint = Configuration.GetSection("KeyVault")["KeyVaultEndpoint"];
+                    options.SigningCredentials.AddKey(KeyVaultHelper.GetSigningKey(keyVaultEndpoint, keyPath));
                 });
 
             // Add application services.
